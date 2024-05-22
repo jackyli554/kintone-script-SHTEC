@@ -29,7 +29,7 @@
             for (let i = 0; i < recordID_arr.length; i++) {
                 records.push({
                     "id": recordID_arr[i],
-                    "record": {
+                    "record": { 
                         "Title_for_Calendar": {
                             "value": calendarTitle_arr[i]
                         }
