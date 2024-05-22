@@ -33,7 +33,11 @@
             app:kintone.app.getId(),
             'query' : 'limit 500 '
         }
+/* ##TODO
+use REST API get all record <-fast_fetch in helper js
 
+
+*/
             console.log(recordID_arr);
             var records = [];
             for (let i = 0; i < recordID_arr.length; i++) {
