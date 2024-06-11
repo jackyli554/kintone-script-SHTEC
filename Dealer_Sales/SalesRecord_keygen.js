@@ -12,72 +12,51 @@
         myIndexButton.innerHTML = 'Click to Refresh Key of the filtered record(Works only under list view!)';
 
         // Button onclick function
-            console.log(JSON.stringify(event));
-
         myIndexButton.onclick = function() {
-            var records = event.records;
-            var recordID_arr = [];
-            var monthly_key_arr= [];
-            var quarterly_key_arr = [];
-            var Relevant_Sales_Amount_arr = [];
-            var Relevent_Sales_Quantity_arr = [];
-            records.forEach((record) => {
-                recordID_arr.push(record.$id.value);
-                //update JSON body
-                // monthly_key_arr.push(record.Dealer_Name.value+"-"+record.Details.value[0].value.category.value+"-"+record.year.value.toString()+"-"+record.Month.value.toString()+"-"+record.Staff_Name.value[0].name);
-                // quarterly_key_arr.push( record.Dealer_Name.value+"-"+record.Details.value[0].value.category.value+"-"+record.year.value.toString()+"-"+record.Quarter.value.toString()+"-"+record.Staff_Name.value[0].name);
-                // Relevant_Sales_Amount_arr.push(record.Details.value[0].value.Sales_amount.value);
-                // Relevent_Sales_Quantity_arr.push(record.Details.value[0].value.Sales_Quantity.value);
-            });
-        const Query_body ={
-            app:kintone.app.getId(),
-            'query' : 'limit 500 '
-        }
 /* ##TODO
 use REST API get all record <-fast_fetch in helper js
 
 
 */
-            console.log(recordID_arr);
-            var records = [];
-            for (let i = 0; i < recordID_arr.length; i++) {
-                records.push({
-                    "id": recordID_arr[i],
+        fetch_fast().then(async function (records) {
+            console.log(records);
+
+            var commit_records = [];
+            for (let i = 0; i < records.length; i++) {
+                commit_records.push({
+                    "id": records[i].$id.value,
                     "record": { 
                         "monthly_key": {
-                            "value": monthly_key_arr[i]
+                            "value": records[i].Dealer_Name.value+"-"+records[i].Details.value[0].value.category.value+"-"+records[i].year.value.toString()+"-"+records[i].Month.value.toString()+"-"+records[i].Staff_Name.value[0].name
                         },
                         "quarterly_key" : {
-                            "value" : quarterly_key_arr[i]
+                            "value" : records[i].Dealer_Name.value+"-"+records[i].Details.value[0].value.category.value+"-"+records[i].year.value.toString()+"-"+records[i].Quarter.value.toString()+"-"+records[i].Staff_Name.value[0].name
                         },
                         "Relevant_Sales_Amount_arr" :{
-                            "value" : Relevant_Sales_Amount_arr[i]
+                            "value" : records[i].Details.value[0].value.Sales_amount.value
                         },
                         "Relevent_Sales_Quantity_arr" : {
-                            "value" : Relevent_Sales_Quantity_arr[i]
+                            "value" :records[i].Details.value[0].value.Sales_Quantity.value
                         }
-
                     }
                 })
             }
-            var body = {
-                'app': APP_ID,
-                'records': records
+            
+            var done_index = 0;
+            console.log("Before Commiting");
+            while(done_index<commit_records.length)
+            {
+              var body = {
+              'app': APP_ID,
+              'records': commit_records.slice(done_index,done_index+100) //copy 100 records,last record in arr.slice is not copied!
             };
-            kintone.api(kintone.api.url('/k/v1/records.json', true), 'PUT', body, function(resp) {
-                // success
-                console.log(resp);
-            }, function(error) {
-                // error
-                console.log(error);
-            });
-
-
-
-            console.log(JSON.stringify(body));
+              await kintone.api(kintone.api.url('/k/v1/records.json', true), 'PUT', body)
+                done_index=done_index+100;
+            }
+        
             console.log("Finished bulk update!");
             return event;
-
+        });
         };
 
         // Retrieve the header menu space element and set the button there
@@ -94,6 +73,10 @@ use REST API get all record <-fast_fetch in helper js
       record.Relevent_Sales_Quantity.value = record.Details.value[0].value.Sales_Quantity.value;
       return event;
     });
+    
+    
+    
+    
     kintone.events.on(['app.record.create.show'],(event)=>{  //activte on record create finished loading
       var record = event.record;
       console.log(record);
@@ -107,4 +90,26 @@ use REST API get all record <-fast_fetch in helper js
       return event;
       }
     });
+
+    function fetch_fast(opt_last_record_id, opt_records) {
+        var records = opt_records || [];
+        var query = opt_last_record_id ? '$id > ' + opt_last_record_id : '';
+        query += ' order by $id asc limit 500';
+        var params = {
+          app: kintone.app.getId(),
+          query: query
+        };
+        return kintone.api('/k/v1/records', 'GET', params).then(function(resp) {
+          records = records.concat(resp.records);
+          if (resp.records.length === 500) {
+            /* If the maximum number of retrievable records was retrieved, there is a possibility that more records exist.
+              Therefore, the next 500 records that have a record number larger than the last retrieved record are retrieved.
+              Since the records are retrieved all at once in ascending record number order,
+              it is possible to retrieve the next 500 records with these conditions.
+            */
+            return fetch_fast(resp.records[resp.records.length - 1].$id.value, records);
+          }
+          return records;
+        });
+      };
   })();
