@@ -1,8 +1,8 @@
 (() => {
   "use strict";
   //ID for test_env 
-  const APP_ID = 264;
-  const View_ID = 6724983; 
+  const APP_ID = 257;
+  const View_ID = 6724981; 
   kintone.events.on("app.record.index.show", function (event) {
     //Conditional so that the button only shows at speical view
     if (event.viewId !== View_ID) {
