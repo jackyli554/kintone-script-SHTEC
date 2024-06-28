@@ -1,7 +1,7 @@
 (() => {
   "use strict";
   const APP_ID = 233;
-  const View_ID = 9999;
+  const View_ID = 6724983;
   kintone.events.on("app.record.index.show", function (event) {
     //Conditional so that the button only shows at speical view
     if (event.viewId !== View_ID) {
@@ -33,7 +33,7 @@
             record: {
               monthly_key: {
                 value:
-                  records[i].Dealer_Name.value +
+                  records[i].CustomerCode.value +
                   "-" +
                   records[i].Details.value[0].value.category.value +
                   "-" +
@@ -41,11 +41,11 @@
                   "-" +
                   records[i].Month.value.toString() +
                   "-" +
-                  records[i].Staff_Name.value[0].name,
+                  records[i].Lookup.value[0].name, //StaffID
               },
               quarterly_key: {
                 value:
-                  records[i].Dealer_Name.value +
+                  records[i].CustomerCode.value +
                   "-" +
                   records[i].Details.value[0].value.category.value +
                   "-" +
@@ -53,7 +53,7 @@
                   "-" +
                   records[i].Quarter.value.toString() +
                   "-" +
-                  records[i].Staff_Name.value[0].name,
+                  records[i].Lookup.value[0].name, //StaffID
               },
               Relevant_Sales_Amount_arr: {
                 value: records[i].Details.value[0].value.Sales_amount.value,
