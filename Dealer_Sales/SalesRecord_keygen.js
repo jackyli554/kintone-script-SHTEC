@@ -39,7 +39,7 @@
                   "-" +
                   records[i].Month.value.toString() +
                   "-" +
-                  records[i].Lookup.value[0].name,  //Staff ID
+                  records[i].StaffID_Lookup.value.toString()  //Staff ID
               },
               quarterly_key: {
                 value:
@@ -51,14 +51,14 @@
                   "-" +
                   records[i].Quarter.value.toString() +
                   "-" +
-                  records[i].Lookup.value[0].name,// Staff ID
+                  records[i].StaffID_Lookup.value.toString()// Staff ID
               },
-              Relevant_Sales_Amount_arr: {
-                value: records[i].Details.value[0].value.Sales_amount.value,
+              Relevant_Sales_Amount: {
+                value: records[i].Details.value[0].value.Sales_amount.value
               },
-              Relevent_Sales_Quantity_arr: {
-                value: records[i].Details.value[0].value.Sales_Quantity.value,
-              },
+              Relevent_Sales_Quantity: {
+                value: records[i].Details.value[0].value.Sales_Quantity.value
+              }
             },
           });
         }
@@ -98,7 +98,7 @@
 
       console.log("keygen");
       record.monthly_key.value =
-        record.Dealer_Name.value +
+        record.CustomerCode.value +
         "-" +
         record.Details.value[0].value.category.value +
         "-" +
@@ -106,9 +106,9 @@
         "-" +
         record.Month.value.toString() +
         "-" +
-        record.Staff_Name.value[0].name;
+        record.StaffID_Lookup.value.toString()
       record.quarterly_key.value =
-        record.Dealer_Name.value +
+        record.CustomerCode.value +
         "-" +
         record.Details.value[0].value.category.value +
         "-" +
@@ -116,7 +116,7 @@
         "-" +
         record.Quarter.value.toString() +
         "-" +
-        record.Staff_Name.value[0].name;
+        record.StaffID_Lookup.value.toString()
       record.Relevant_Sales_Amount.value =
         record.Details.value[0].value.Sales_amount.value;
       record.Relevent_Sales_Quantity.value =
