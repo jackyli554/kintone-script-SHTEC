@@ -1,23 +1,25 @@
 (() => {
   "use strict";
   const APP_ID = 233;
+  const View_ID = 9999;
   kintone.events.on("app.record.index.show", function (event) {
+    //Conditional so that the button only shows at speical view
+    if (event.viewId !== View_ID) {
+      return event;
+    }
     //add a button during record listing to bulk refresh keygen
     // Prevent duplication of the button
-    //TODO: Add a conditional so that the button will only be added on specific view Id
-    
-
     if (document.getElementById("my_index_button") != null) {
       return;
     }
+
     // Set a button
-    var myIndexButton = document.createElement("button"); 
+    var myIndexButton = document.createElement("button");
     myIndexButton.id = "my_index_button";
     myIndexButton.innerHTML =
       "Click to Refresh Key of the filtered record(Works only under list view!)";
-    myIndexButton.style.width = 
+
     // Button onclick function
-    
     //TODO: Dealer_Name->Customer_ID
     //      Staff_Name ->Staff_ID
     myIndexButton.onclick = function () {

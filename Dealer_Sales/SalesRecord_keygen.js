@@ -1,7 +1,12 @@
 (() => {
   "use strict";
   const APP_ID = 229;
+  const View_ID = 9999;
   kintone.events.on("app.record.index.show", function (event) {
+    //Conditional so that the button only shows at speical view
+    if (event.viewId !== View_ID) {
+      return event;
+    }
     //add a button during record listing to bulk refresh keygen
     // Prevent duplication of the button
     if (document.getElementById("my_index_button") != null) {
