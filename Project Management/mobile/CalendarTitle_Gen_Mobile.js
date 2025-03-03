@@ -1,7 +1,7 @@
 (() => {
     'use strict';
     const App_ID = 235;
-    kintone.events.on('app.record.index.show', function(event) { //add a button during record listing to bulk refresh title
+    kintone.events.on('mobile.app.record.index.show', function(event) { //add a button during record listing to bulk refresh title
         // Prevent duplication of the button
         if (document.getElementById('my_index_button') != null) {
             return;
@@ -53,7 +53,7 @@
         };
 
         // Retrieve the header menu space element and set the button there
-        kintone.app.getHeaderMenuSpaceElement().appendChild(myIndexButton);
+        kintone.mobile.app.getHeaderMenuSpaceElement().appendChild(myIndexButton);
     });
 
     //Event listener for record create and edit,note that mobile JS API does not support detail view inline edit.
